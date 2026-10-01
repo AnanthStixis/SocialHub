@@ -1,3 +1,4 @@
+import AuthBackdrop from "@/components/AuthBackdrop";
 import { useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { KeyRound } from "lucide-react";
@@ -39,7 +40,8 @@ export default function ChangePasswordPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-sidebar via-primary-800 to-primary-600 p-4">
+    <div className="relative isolate flex min-h-screen items-center justify-center overflow-hidden p-4">
+      <AuthBackdrop />
       <Card className="w-full max-w-sm p-8 shadow-xl">
         <form onSubmit={submit} className="flex flex-col gap-4">
           <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary-50 text-primary-600">

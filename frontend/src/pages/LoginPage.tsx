@@ -1,10 +1,12 @@
+import LoginArt, { LoginHero } from "@/components/LoginArt";
+import Wordmark from "@/components/Wordmark";
+import LoginBento from "@/components/LoginBento";
 import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
-import { Zap } from "lucide-react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { api } from "@/lib/api";
 import { useAuthStore } from "@/store/auth";
-import { Button, Card, Input } from "@/components/ui";
+import { Button, Input } from "@/components/ui";
 
 export default function LoginPage() {
   const REMEMBER_KEY = "smhub-login-email";
@@ -22,6 +24,8 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const setSession = useAuthStore((s) => s.setSession);
   const navigate = useNavigate();
+  const [params] = useSearchParams();
+  const bento = params.get("v") === "2";
   const queryClient = useQueryClient();
 
   // Opening the sign-in page ends any session in this browser, so other open tabs
@@ -56,17 +60,18 @@ export default function LoginPage() {
     }
   }
 
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-sidebar via-primary-800 to-primary-600 p-4">
-      <Card className="w-full max-w-sm p-8 shadow-xl">
+  const form = (
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <div className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-sidebar">
-              <Zap className="h-5 w-5 text-primary-400" />
+          <div className={`flex items-center justify-center gap-3 pb-2 ${bento ? "hidden" : ""}`}>
+            <img src="/logo.svg" alt="" className="h-14 w-14 shrink-0 rounded-2xl shadow-[0_6px_16px_rgba(15,118,110,0.28)]" />
+            <div className="flex flex-col items-start">
+              <Wordmark className="text-4xl leading-none" />
+              <p className="mt-1 text-[12.5px] font-medium leading-none tracking-wide text-gray-500">Create. Schedule. Publish. Grow.</p>
             </div>
-            <span className="text-xl font-bold tracking-tight">Social Hub</span>
           </div>
-          <h1 className="text-lg font-semibold">Welcome back</h1>
+          <div className={bento ? "" : "text-center"}>
+            <h1 className="text-xl font-semibold tracking-tight">Welcome back</h1>
+          </div>
 
           {error && <div className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">{error}</div>}
 
@@ -80,7 +85,34 @@ export default function LoginPage() {
             {loading ? "Signing in..." : "Sign in"}
           </Button>
         </form>
-      </Card>
+  );
+
+  if (bento) {
+    return (
+      <div className="grid min-h-screen lg:grid-cols-[minmax(420px,0.9fr)_1.3fr]">
+        <div className="flex flex-col justify-between bg-white p-8 sm:p-12">
+          <div className="flex items-center gap-2.5">
+            <img src="/logo.svg" alt="" className="h-9 w-9 shrink-0 rounded-[10px] shadow-[0_2px_8px_rgba(15,118,110,0.3)]" />
+            <Wordmark className="text-[18px]" />
+          </div>
+          <div className="mx-auto w-full max-w-sm py-10">{form}</div>
+          <p className="text-xs text-gray-400">&copy; {new Date().getFullYear()} Feedwren</p>
+        </div>
+        <LoginBento />
+      </div>
+    );
+  }
+
+  return (
+    <div className="relative isolate flex min-h-screen items-center justify-center overflow-hidden p-4 lg:justify-end lg:pr-[12%] 2xl:pr-[14%]">
+      <LoginArt />
+      <LoginHero />
+      <div className="w-full max-w-[26rem] rounded-[1.75rem] bg-gradient-to-br from-sky-300/70 via-white to-pink-300/70 p-px shadow-[0_30px_80px_-20px_rgba(15,23,42,0.28)]">
+        <div className="rounded-[1.7rem] bg-white/80 p-8 backdrop-blur-2xl">
+          {form}
+          <p className="mt-6 text-center text-xs text-gray-400">&copy; {new Date().getFullYear()} Feedwren</p>
+        </div>
+      </div>
     </div>
   );
 }

@@ -1,4 +1,4 @@
-# Social Media Content & Publishing Hub
+# Feedwren
 
 A production-grade replacement for the Google Sheets + Make.com content pipeline: manual/AI content creation, platform-specific generation, and scheduling/publishing to Facebook, Instagram, and LinkedIn — architected so new platforms (X/Twitter, YouTube, Threads, TikTok, Pinterest) can be added without a data-model redesign.
 
@@ -44,7 +44,7 @@ Frontend    Backend (FastAPI)
 ## Team, roles and invitations
 
 - **Team & Roles** (Admin only) lists members and invites new ones (first name, last name, email, role). Two roles exist: **Admin** (everything, including Settings, Team & Roles and Email Template) and **Publisher** (dashboard, compose, all posts, calendar, publishing, analytics; no settings or team management). Roles are enforced in the API (`STAFF_ROLES` / `require_roles`) as well as hidden in the UI.
-- An invite creates the account immediately with the default password (`DEFAULT_USER_PASSWORD`, `Stixis@123`) and emails a link. Opening the link (or signing in) marks it accepted; the first sign-in forces a password change.
+- An invite creates the account immediately with the default password (`DEFAULT_USER_PASSWORD`, `Welcome@123`) and emails a link. Opening the link (or signing in) marks it accepted; the first sign-in forces a password change.
 - The invitation email (logo, wording, colours) is edited under **Email Template**; SMTP is configured with the `SMTP_*` / `EMAIL_*` variables in `.env`.
 - **Analytics**, **All Posts** and **Publishing** can download reports as PDF, Excel or CSV. Run `pip install -r requirements.txt` and `alembic upgrade head` after pulling this change.
 

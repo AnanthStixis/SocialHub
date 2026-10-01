@@ -3,7 +3,7 @@ from functools import lru_cache
 
 
 class Settings(BaseSettings):
-    APP_NAME: str = "Social Media Content & Publishing Hub"
+    APP_NAME: str = "Feedwren"
     APP_URL: str = "http://localhost:8000"
     FRONTEND_URL: str = "http://localhost:5173"
     ENV: str = "development"
@@ -38,9 +38,9 @@ class Settings(BaseSettings):
     SMTP_PASSWORD: str = ""
     SMTP_TLS: bool = True
     EMAIL_FROM: str = ""
-    EMAIL_FROM_NAME: str = "Social Hub"
+    EMAIL_FROM_NAME: str = "Feedwren"
 
-    DEFAULT_USER_PASSWORD: str = "Stixis@123"
+    DEFAULT_USER_PASSWORD: str = "Welcome@123"
     INVITE_EXPIRE_DAYS: int = 7
 
     # backend/.env wins over the repo-root .env; unknown keys are ignored.

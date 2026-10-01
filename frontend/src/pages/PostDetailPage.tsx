@@ -542,6 +542,7 @@ export default function PostDetailPage() {
                   placeholder="e.g. Benefits of AI in customer support"
                 />
                 <Button
+                  variant="ai"
                   className="shrink-0"
                   onMouseDown={(e) => e.preventDefault()}
                   onClick={handleGenerate}

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import PageHeader from "@/components/PageHeader";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ImagePlus, RotateCcw, Save, Send, Trash2 } from "lucide-react";
 import { api } from "@/lib/api";
@@ -89,23 +90,23 @@ export default function EmailTemplatePage() {
 
   return (
     <div>
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Invitation Email</h1>
-          <p className="mt-1 text-sm text-gray-500">Customize the logo and wording of the email sent to new team members.</p>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <Button variant="outline" onClick={() => setDraft(pick(data.defaults))}>
-            <RotateCcw size={15} /> Reset to default
-          </Button>
-          <Button variant="outline" onClick={() => testMutation.mutate()} loading={testMutation.isPending}>
-            <Send size={15} /> Send test to me
-          </Button>
-          <Button onClick={() => saveMutation.mutate()} loading={saveMutation.isPending}>
-            <Save size={15} /> Save template
-          </Button>
-        </div>
-      </div>
+      <PageHeader
+        title="Invitation Email"
+        description="Customize the logo and wording of the email sent to new team members."
+        actions={
+          <>
+            <Button variant="outline" onClick={() => setDraft(pick(data.defaults))}>
+              <RotateCcw size={15} /> Reset to default
+            </Button>
+            <Button variant="outline" onClick={() => testMutation.mutate()} loading={testMutation.isPending}>
+              <Send size={15} /> Send test to me
+            </Button>
+            <Button variant="primary" onClick={() => saveMutation.mutate()} loading={saveMutation.isPending}>
+              <Save size={15} /> Save template
+            </Button>
+          </>
+        }
+      />
 
       <div className="grid items-start gap-6 xl:grid-cols-2">
         <div className="space-y-5">

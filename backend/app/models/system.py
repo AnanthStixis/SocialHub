@@ -34,7 +34,7 @@ class EmailTemplate(Base, UUIDMixin, TimestampMixin):
 
     __tablename__ = "email_templates"
 
-    brand_name: Mapped[str] = mapped_column(String(100), default="Social Hub")
+    brand_name: Mapped[str] = mapped_column(String(100), default="Feedwren")
     logo_file: Mapped[str | None] = mapped_column(String(255))
     accent_color: Mapped[str] = mapped_column(String(20), default="#0f766e")
     subject: Mapped[str] = mapped_column(String(255))

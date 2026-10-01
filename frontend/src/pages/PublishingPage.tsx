@@ -1,4 +1,5 @@
 import { useState } from "react";
+import PageHeader from "@/components/PageHeader";
 import { Link } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { RefreshCw } from "lucide-react";
@@ -37,9 +38,7 @@ export default function PublishingPage() {
 
   return (
     <div>
-      <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-semibold tracking-tight">Publishing</h1>
-      </div>
+      <PageHeader title="Publishing" />
 
       <FilterPanel filters={filters} statuses={JOB_STATUSES} searchPlaceholder="Search by post content..." reportEndpoint="/reports/publishing" />
 

@@ -230,7 +230,7 @@ export default function AIAssistant({
               }}
               className={clsx(
                 "flex cursor-pointer items-center gap-1.5 whitespace-nowrap border-b-2 px-3 py-2 text-xs font-medium transition-colors",
-                tab === id ? "border-primary-500 text-primary-600" : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700",
+                tab === id ? "border-ai text-ai" : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700",
               )}
             >
               <Icon size={14} />
@@ -245,7 +245,7 @@ export default function AIAssistant({
       {tab === "improve" &&
         (!content.trim() ? (
           <div className="py-6 text-center">
-            <Sparkles size={24} className="mx-auto mb-2 text-gray-300" />
+            <span className="mx-auto mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-ai-light text-ai"><Sparkles size={20} /></span>
             <p className="text-sm text-gray-500">Write some content first, then improve it with AI</p>
           </div>
         ) : (
@@ -257,7 +257,7 @@ export default function AIAssistant({
                 </option>
               ))}
             </Select>
-            <Button className="w-full" onClick={improve} loading={loading}>
+            <Button variant="ai" className="w-full" onClick={improve} loading={loading}>
               <Wand2 size={16} /> Improve with AI
             </Button>
             {improved && (
@@ -301,7 +301,7 @@ export default function AIAssistant({
               ))}
             </div>
           </div>
-          <Button className="w-full" onClick={generateFromTopic} loading={loading} disabled={!topic.trim() || targetsFor(topicPlatforms).length === 0}>
+          <Button variant="ai" className="w-full" onClick={generateFromTopic} loading={loading} disabled={!topic.trim() || targetsFor(topicPlatforms).length === 0}>
             <Sparkles size={16} /> Generate
           </Button>
           {topicPosts.length > 0 && (
@@ -324,7 +324,7 @@ export default function AIAssistant({
         <div className="space-y-3">
           <Input label="URL" type="url" value={url} onChange={(e) => setUrl(e.target.value)} placeholder="https://example.com/article" />
           <PlatformPick own={urlPlatforms} setOwn={setUrlPlatforms} />
-          <Button className="w-full" onClick={generateFromUrl} loading={loading} disabled={!url.trim() || targetsFor(urlPlatforms).length === 0}>
+          <Button variant="ai" className="w-full" onClick={generateFromUrl} loading={loading} disabled={!url.trim() || targetsFor(urlPlatforms).length === 0}>
             <Link2 size={16} /> Generate from URL
           </Button>
           {urlMeta && (urlMeta.title || urlMeta.summary) && (

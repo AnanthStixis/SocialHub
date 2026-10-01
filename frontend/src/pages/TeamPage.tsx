@@ -1,4 +1,5 @@
 import { useState } from "react";
+import PageHeader from "@/components/PageHeader";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Ban, CheckCircle2, MailPlus, Pencil, Send, Trash2, UserPlus } from "lucide-react";
 import { api } from "@/lib/api";
@@ -142,15 +143,15 @@ export default function TeamPage() {
 
   return (
     <div>
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Team &amp; Roles</h1>
-          <p className="mt-1 text-sm text-gray-500">Invite teammates and control what each role can access.</p>
-        </div>
-        <Button onClick={openInvite}>
-          <UserPlus size={16} /> Invite member
-        </Button>
-      </div>
+      <PageHeader
+        title="Team &amp; Roles"
+        description="Invite teammates and control what each role can access."
+        actions={
+          <Button variant="primary" onClick={openInvite}>
+            <UserPlus size={16} /> Invite member
+          </Button>
+        }
+      />
 
       <Card padding={false} className="overflow-hidden">
         <div className="overflow-x-auto">

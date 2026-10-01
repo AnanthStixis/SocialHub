@@ -1,6 +1,8 @@
+import AuthBackdrop from "@/components/AuthBackdrop";
+import Wordmark from "@/components/Wordmark";
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { CheckCircle2, XCircle, Zap } from "lucide-react";
+import { CheckCircle2, XCircle } from "lucide-react";
 import { api } from "@/lib/api";
 import { Card, LoadingSpinner } from "@/components/ui";
 
@@ -31,13 +33,12 @@ export default function AcceptInvitePage() {
   }, [token]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-sidebar via-primary-800 to-primary-600 p-4">
+    <div className="relative isolate flex min-h-screen items-center justify-center overflow-hidden p-4">
+      <AuthBackdrop />
       <Card className="w-full max-w-md p-8 text-center shadow-xl">
         <div className="mb-6 flex items-center justify-center gap-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-sidebar">
-            <Zap className="h-5 w-5 text-primary-400" />
-          </div>
-          <span className="text-xl font-bold tracking-tight">Social Hub</span>
+          <img src="/logo.svg" alt="" className="h-9 w-9 shrink-0 rounded-[10px] shadow-[0_2px_8px_rgba(15,118,110,0.3)]" />
+          <Wordmark className="text-2xl" />
         </div>
         {state === "loading" && <LoadingSpinner className="mx-auto text-primary-500" />}
         {state === "ok" && (
@@ -48,7 +49,7 @@ export default function AcceptInvitePage() {
               Welcome aboard! Sign in as <b>{email}</b> using the temporary password from your invitation email. You'll be asked to set a
               new password right after signing in.
             </p>
-            <Link to="/login" className="mt-6 inline-block rounded-lg bg-primary-600 px-6 py-2.5 text-sm font-semibold text-white hover:bg-primary-700">
+            <Link to="/login" className="mt-6 inline-block rounded-lg bg-teal-700 px-6 py-2.5 text-sm font-semibold text-white hover:bg-primary-700">
               Continue to sign in
             </Link>
           </>

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import PageHeader from "@/components/PageHeader";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import toast from "@/lib/toast";
@@ -255,12 +256,10 @@ export default function ComposePage() {
 
   return (
     <div className="mx-auto max-w-7xl">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">{readOnly ? "View Post" : postId ? "Edit Post" : "Create Post"}</h1>
-        <p className="mt-1 text-sm text-gray-500">
-          {readOnly ? "This post has been published, so it is read-only." : postId ? "Update your post, then save, reschedule or publish it" : "Create and schedule posts across your connected platforms"}
-        </p>
-      </div>
+      <PageHeader
+        title={readOnly ? "View Post" : postId ? "Edit Post" : "Create Post"}
+        description={readOnly ? "This post has been published, so it is read-only." : postId ? "Update your post, then save, reschedule or publish it" : "Create and schedule posts across your connected platforms"}
+      />
 
       <div className="flex flex-col items-start gap-6 lg:flex-row">
         <div className="w-full min-w-0 space-y-5 lg:flex-[65]">

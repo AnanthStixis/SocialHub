@@ -10,7 +10,7 @@ UPLOAD_DIR = Path(__file__).resolve().parent.parent.parent / "uploads" / "email"
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
 DEFAULTS = dict(
-    brand_name="Social Hub",
+    brand_name="Feedwren",
     accent_color="#0f766e",
     subject="You're invited to join {{organization}} on {{brand}}",
     heading="You're invited to {{organization}}",

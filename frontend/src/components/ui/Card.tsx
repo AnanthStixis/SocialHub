@@ -6,7 +6,7 @@ interface CardProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 export function Card({ padding = true, className, ...rest }: CardProps) {
-  return <div className={clsx("rounded-xl border border-gray-100 bg-white shadow-sm", padding && "p-6", className)} {...rest} />;
+  return <div className={clsx("rounded-2xl border border-gray-200 bg-surface shadow-[var(--shadow-card)] transition-colors duration-150 hover:border-gray-300", padding && "p-6", className)} {...rest} />;
 }
 
 Card.Header = function CardHeader({ className, ...rest }: HTMLAttributes<HTMLDivElement>) {

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import PageHeader from "@/components/PageHeader";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Building2 } from "lucide-react";
 import { api } from "@/lib/api";
@@ -24,8 +25,8 @@ export default function SettingsOrganizationPage() {
 
   return (
     <div className="mx-auto max-w-3xl">
+      <PageHeader title="Organization" />
       <SettingsNav />
-      <h1 className="mb-6 text-2xl font-semibold tracking-tight">Organization</h1>
       <Card>
         <form
           className="space-y-4"

@@ -56,3 +56,23 @@ def mark_all_read(db: Session = Depends(get_db), current_user: User = Depends(ge
     ).update({"is_read": True})
     db.commit()
     return {"success": True}
+
+
+@router.delete("/{notification_id}")
+def delete_notification(notification_id: str, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    notification = db.get(Notification, notification_id)
+    if not notification or notification.user_id != current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={"success": False, "error": {"code": "NOTIFICATION_NOT_FOUND", "message": "Notification not found"}},
+        )
+    db.delete(notification)
+    db.commit()
+    return {"success": True}
+
+
+@router.delete("")
+def clear_all(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    db.query(Notification).filter(Notification.user_id == current_user.id).delete()
+    db.commit()
+    return {"success": True}

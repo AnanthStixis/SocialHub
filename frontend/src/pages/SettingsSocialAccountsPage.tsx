@@ -1,4 +1,5 @@
 import { useEffect, useState, type ReactNode } from "react";
+import PageHeader from "@/components/PageHeader";
 import { Link, useSearchParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Activity, Facebook, Instagram, Link2, Linkedin, RefreshCw, Unlink } from "lucide-react";
@@ -221,8 +222,8 @@ export default function SettingsSocialAccountsPage() {
           </div>
         </div>
       )}
+      <PageHeader title="Social Accounts" />
       <SettingsNav />
-      <h1 className="mb-6 text-2xl font-semibold tracking-tight">Social Accounts</h1>
 
       {banner && (
         <div

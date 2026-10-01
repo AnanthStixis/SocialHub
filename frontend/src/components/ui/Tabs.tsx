@@ -7,23 +7,21 @@ export function Tabs({ tabs, activeTab, onChange }: {
   onChange: (id: string) => void;
 }) {
   return (
-    <div className="border-b border-gray-200">
-      <nav className="-mb-px flex" role="tablist">
-        {tabs.map((t) => (
-          <button
-            key={t.id}
-            role="tab"
-            aria-selected={t.id === activeTab}
-            onClick={() => onChange(t.id)}
-            className={clsx(
-              "cursor-pointer whitespace-nowrap border-b-2 px-4 py-2.5 text-sm font-medium transition-colors duration-150",
-              t.id === activeTab ? "border-primary-500 text-primary-600" : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700",
-            )}
-          >
-            {t.label}
-          </button>
-        ))}
-      </nav>
-    </div>
+    <nav className="inline-flex max-w-full gap-1 overflow-x-auto rounded-xl bg-gray-100 p-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" role="tablist">
+      {tabs.map((t) => (
+        <button
+          key={t.id}
+          role="tab"
+          aria-selected={t.id === activeTab}
+          onClick={() => onChange(t.id)}
+          className={clsx(
+            "cursor-pointer whitespace-nowrap rounded-[10px] px-3.5 py-1.5 text-sm font-medium transition-all duration-150",
+            t.id === activeTab ? "bg-white text-primary shadow-[var(--shadow-card)] ring-1 ring-gray-200" : "text-gray-500 hover:text-gray-800",
+          )}
+        >
+          {t.label}
+        </button>
+      ))}
+    </nav>
   );
 }

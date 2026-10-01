@@ -1,4 +1,5 @@
 import { useMemo, useState, type CSSProperties } from "react";
+import PageHeader from "@/components/PageHeader";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import clsx from "clsx";
 import { ArrowDown, FileText, Heart, MessageCircle, RefreshCw, Sparkles, TrendingUp } from "lucide-react";
@@ -151,18 +152,18 @@ export default function AnalyticsPage() {
 
   return (
     <div>
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Analytics</h1>
-          <p className="mt-1 text-sm text-gray-500">How your posts are performing on each social platform.</p>
-        </div>
-        <div className="flex flex-wrap items-center gap-3">
-          <RangePicker filters={filters} />
-          <Button variant="secondary" onClick={() => sync.mutate()} loading={sync.isPending}>
-            <RefreshCw size={14} /> Refresh from platforms
-          </Button>
-        </div>
-      </div>
+      <PageHeader
+        title="Analytics"
+        description="How your posts are performing on each social platform."
+        actions={
+          <>
+            <RangePicker filters={filters} />
+            <Button variant="primary" onClick={() => sync.mutate()} loading={sync.isPending}>
+              <RefreshCw size={14} /> Refresh from platforms
+            </Button>
+          </>
+        }
+      />
       {(sync.isError || engagement.data?.last_synced) && (
         <p className={clsx("-mt-4 mb-4 text-xs", sync.isError ? "text-red-600" : "text-gray-400")}>
           {sync.isError ? "Could not refresh engagement." : `Likes and comments last refreshed ${new Date(engagement.data!.last_synced!).toLocaleString()}`}
@@ -190,7 +191,7 @@ export default function AnalyticsPage() {
             ))}
           </div>
 
-          <div className="grid grid-cols-2 gap-4 lg:grid-cols-5">
+          <div className="grid grid-cols-2 gap-4 2xl:grid-cols-5 md:grid-cols-3">
             <KpiCard compact label="Posts" hint={`Published on ${platformLabel}`} value={totals.posts} icon={FileText} tone="blue" series={trend.posts} breakdown={byPlatform((t) => t.posts)} />
             <KpiCard compact label="Likes" hint={`${avg(totals.likes, totals.posts)} per post`} value={totals.likes} icon={Heart} tone="red" series={trend.likes} breakdown={byPlatform((t) => t.likes)} />
             <KpiCard compact label="Comments" hint={`${avg(totals.comments, totals.posts)} per post`} value={totals.comments} icon={MessageCircle} tone="emerald" series={trend.comments} breakdown={byPlatform((t) => t.comments)} />

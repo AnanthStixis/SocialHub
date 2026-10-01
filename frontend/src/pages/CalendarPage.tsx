@@ -61,7 +61,7 @@ export default function CalendarPage() {
   const openEntry = (e: CalendarEntry) => setSelectedDay(entryDate(e));
 
   return (
-    <div className="-m-6 flex min-h-[calc(100%+3rem)] flex-col">
+    <div className="-mx-6 -my-8 flex min-h-[calc(100%+4rem)] flex-col bg-[#f4f6f8]">
       <div className="flex shrink-0 items-center justify-between border-b border-gray-100 bg-white px-6 py-4">
         <div className="flex items-center gap-3">
           <CalendarDays size={24} className="text-primary-500" />

@@ -137,7 +137,7 @@ export default function MediaUploader({
           {links.map((l, i) => (
             <li key={l.url} className="flex items-center gap-3 rounded-lg border border-gray-100 px-3 py-2">
               {l.media_type === "video" ? (
-                <Film size={16} className="shrink-0 text-purple-500" />
+                <Film size={16} className="shrink-0 text-gray-500" />
               ) : (
                 <img src={l.url} alt="" className="h-6 w-6 shrink-0 rounded object-cover" onError={(e) => (e.currentTarget.style.display = "none")} />
               )}
@@ -160,7 +160,7 @@ export default function MediaUploader({
           {files.map((f, i) => (
             <li key={`${f.name}-${i}`} className="flex items-center gap-3 rounded-lg border border-gray-100 px-3 py-2">
               {f.type.startsWith("video/") ? (
-                <Film size={16} className="shrink-0 text-purple-500" />
+                <Film size={16} className="shrink-0 text-gray-500" />
               ) : (
                 <ImageIcon size={16} className="shrink-0 text-blue-500" />
               )}

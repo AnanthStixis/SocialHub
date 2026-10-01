@@ -2,12 +2,13 @@ import type { ReactNode } from "react";
 import clsx from "clsx";
 
 const variants = {
-  default: "bg-gray-100 text-gray-700",
+  default: "bg-gray-50 text-gray-500 ring-1 ring-inset ring-gray-200",
   primary: "bg-primary-50 text-primary-700",
-  success: "bg-green-50 text-green-700",
-  warning: "bg-yellow-50 text-yellow-700",
-  danger: "bg-red-50 text-red-700",
-  info: "bg-blue-50 text-blue-700",
+  success: "bg-success-light text-success",
+  warning: "bg-warning-light text-warning",
+  danger: "bg-danger-light text-danger",
+  ai: "bg-ai-light text-ai",
+  info: "bg-blue-light text-blue",
 };
 const sizes = { sm: "px-2 py-0.5 text-xs", md: "px-2.5 py-1 text-sm" };
 

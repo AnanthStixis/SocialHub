@@ -121,7 +121,7 @@ def _page_text(url: str) -> str:
     _assert_public_url(url)
     try:
         # Redirects are not followed so a public URL cannot bounce to an internal one.
-        response = httpx.get(url, timeout=15.0, follow_redirects=False, headers={"User-Agent": "SocialHubBot/1.0"})
+        response = httpx.get(url, timeout=15.0, follow_redirects=False, headers={"User-Agent": "FeedwrenBot/1.0"})
         response.raise_for_status()
     except httpx.HTTPError:
         raise _error("URL_FETCH_FAILED", "Could not fetch that URL")

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import PageHeader from "@/components/PageHeader";
 import { Link, useNavigate } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Eye, Pencil, Trash2 } from "lucide-react";
@@ -51,9 +52,7 @@ export default function ContentPage() {
   return (
     <div>
       {modalError && <ErrorModal message={modalError} onClose={() => setModalError(null)} />}
-      <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-semibold tracking-tight">All Posts</h1>
-      </div>
+      <PageHeader title="All Posts" />
 
       <FilterPanel filters={filters} statuses={POST_STATUSES} searchPlaceholder="Search posts by content..." reportEndpoint="/reports/posts" />
 

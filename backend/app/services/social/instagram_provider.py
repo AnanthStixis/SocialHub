@@ -1,7 +1,7 @@
 import time
 import httpx
 from urllib.parse import urlencode
-from app.services.social.base import SocialMediaProvider, PublishResult, AccountInfo, ConnectResult
+from app.services.social.base import SocialMediaProvider, PublishResult, AccountInfo, ConnectResult, Engagement
 
 GRAPH_API_VERSION = "v19.0"
 GRAPH_BASE = f"https://graph.facebook.com/{GRAPH_API_VERSION}"
@@ -158,3 +158,14 @@ class InstagramProvider(SocialMediaProvider):
             f"{GRAPH_BASE}/{external_post_id}", params={"fields": "id", "access_token": access_token}, timeout=30.0
         )
         return "PUBLISHED" if resp.status_code == 200 else "FAILED"
+
+    def get_engagement(self, access_token: str, external_post_id: str) -> Engagement:
+        resp = httpx.get(
+            f"{GRAPH_BASE}/{external_post_id}",
+            params={"fields": "like_count,comments_count", "access_token": access_token},
+            timeout=30.0,
+        )
+        if resp.status_code != 200:
+            return Engagement()
+        data = resp.json()
+        return Engagement(likes=data.get("like_count", 0) or 0, comments=data.get("comments_count", 0) or 0)

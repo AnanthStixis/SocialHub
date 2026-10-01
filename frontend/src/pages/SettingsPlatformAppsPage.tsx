@@ -1,4 +1,5 @@
 import { useState } from "react";
+import PageHeader from "@/components/PageHeader";
 import { Link } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api";
@@ -49,13 +50,15 @@ export default function SettingsPlatformAppsPage() {
 
   return (
     <div className="mx-auto max-w-3xl">
+      <PageHeader
+        title="Platform Apps"
+        back={
+          <Link to="/settings/social-accounts" className="mb-1 inline-block text-sm text-primary-600 hover:text-primary-700">
+            ← Back
+          </Link>
+        }
+      />
       <SettingsNav />
-      <div className="mb-6 flex items-center gap-3">
-        <Link to="/settings/social-accounts" className="text-sm text-primary-600 hover:underline">
-          ← Back
-        </Link>
-        <h1 className="text-2xl font-semibold tracking-tight">Platform Apps</h1>
-      </div>
 
       <div className="space-y-4">
         {APPS.map(({ key, label }) => {

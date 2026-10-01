@@ -12,14 +12,13 @@ import {
   Users,
   Mail,
   Settings,
-  Zap,
   Bell,
   Search,
-  Plus,
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
 import { isAdmin, useAuthStore } from "@/store/auth";
+import Wordmark from "@/components/Wordmark";
 import UserMenu, { Avatar } from "@/components/UserMenu";
 import { useOrganization } from "@/lib/organization";
 import { nameParts, roleLabel } from "@/lib/user";
@@ -28,16 +27,16 @@ import type { Page, Post } from "@/lib/types";
 import { htmlToPlain } from "@/lib/richText";
 
 // adminOnly items are hidden from (and blocked for) the Publisher role.
-const navItems: { to: string; label: string; icon: typeof Send; adminOnly?: boolean }[] = [
-  { to: "/", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/compose", label: "Create Post", icon: PenSquare },
-  { to: "/posts", label: "All Posts", icon: FileText },
-  { to: "/calendar", label: "Calendar", icon: Calendar },
-  { to: "/publishing", label: "Publishing", icon: Send },
-  { to: "/analytics", label: "Analytics", icon: BarChart3 },
-  { to: "/team", label: "Team & Roles", icon: Users, adminOnly: true },
-  { to: "/email-template", label: "Email Template", icon: Mail, adminOnly: true },
-  { to: "/settings", label: "Settings", icon: Settings, adminOnly: true },
+const navItems: { to: string; label: string; icon: typeof Send; group: string; adminOnly?: boolean }[] = [
+  { to: "/", label: "Dashboard", icon: LayoutDashboard, group: "Workspace" },
+  { to: "/compose", label: "Create Post", icon: PenSquare, group: "Workspace" },
+  { to: "/calendar", label: "Calendar", icon: Calendar, group: "Workspace" },
+  { to: "/posts", label: "All Posts", icon: FileText, group: "Workspace" },
+  { to: "/publishing", label: "Publishing", icon: Send, group: "Insights" },
+  { to: "/analytics", label: "Analytics", icon: BarChart3, group: "Insights" },
+  { to: "/team", label: "Team & Roles", icon: Users, group: "Manage", adminOnly: true },
+  { to: "/email-template", label: "Email Template", icon: Mail, group: "Manage", adminOnly: true },
+  { to: "/settings", label: "Settings", icon: Settings, group: "Manage", adminOnly: true },
 ];
 
 function HeaderSearch() {
@@ -97,7 +96,7 @@ function HeaderSearch() {
           } else if (e.key === "Escape") setOpen(false);
         }}
         placeholder="Search posts..."
-        className="w-full rounded-lg border border-gray-200 bg-gray-50 py-2 pl-10 pr-4 text-sm transition-colors focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+        className="w-full rounded-[10px] border border-gray-200 bg-gray-50 py-2 pl-10 pr-4 text-sm transition-colors placeholder:text-gray-400 hover:border-gray-300 focus:border-primary focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/20"
       />
       {open && term.length >= 2 && (
         <div className="absolute left-0 right-0 top-full z-50 mt-2 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xl">
@@ -154,12 +153,15 @@ function SidebarUser({ collapsed }: { collapsed: boolean }) {
   const { first, last } = nameParts(user);
   const name = `${first} ${last}`.trim() || user?.full_name || "";
   return (
-    <div className={`flex items-center gap-3 border-t border-white/10 px-4 py-3 ${collapsed ? "justify-center px-0" : ""}`} title={collapsed ? `${name} · ${roleLabel(user)}` : undefined}>
+    <div
+      className={`mx-3 mb-3 flex items-center gap-3 rounded-xl border border-primary-100 bg-primary-50 p-2.5 ${collapsed ? "justify-center" : ""}`}
+      title={collapsed ? `${name} · ${roleLabel(user)}` : undefined}
+    >
       <Avatar size={34} />
       {!collapsed && (
         <div className="min-w-0">
-          <p className="truncate text-sm font-semibold text-white">{name}</p>
-          <p className="truncate text-xs text-white/50">{roleLabel(user)}</p>
+          <p className="truncate text-sm font-semibold text-primary">{name}</p>
+          <p className="truncate text-xs text-primary/70">{roleLabel(user)}</p>
         </div>
       )}
     </div>
@@ -169,43 +171,45 @@ function SidebarUser({ collapsed }: { collapsed: boolean }) {
 function Sidebar({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => void }) {
   const isActive = useActive();
   const items = useNavItems();
+  const groups = [...new Set(items.map((i) => i.group))];
   return (
-    <aside
-      className={`hidden shrink-0 flex-col bg-sidebar text-white transition-all duration-300 md:flex ${
-        collapsed ? "w-16" : "w-64"
-      }`}
-    >
-      <div className="flex h-16 items-center gap-2 border-b border-white/10 px-4">
-        <Zap className="h-6 w-6 shrink-0 text-primary-400" />
-        {!collapsed && <span className="text-lg font-bold tracking-tight">Social Hub</span>}
+    <aside className={`relative hidden shrink-0 flex-col border-r border-gray-200 bg-white transition-all duration-300 md:flex ${collapsed ? "w-[72px]" : "w-64"}`}>
+      <div className={`flex h-16 items-center gap-2.5 px-4 ${collapsed ? "justify-center" : ""}`}>
+        <img src="/logo.svg" alt="" className="h-9 w-9 shrink-0 rounded-[10px] shadow-[0_2px_8px_rgba(15,118,110,0.3)]" />
+        {!collapsed && <Wordmark className="text-[18px]" />}
       </div>
-      <nav className="flex-1 overflow-y-auto py-4">
-        <ul className="space-y-1 px-2">
-          {items.map(({ to, label, icon: Icon }) => (
-            <li key={to}>
-              <NavLink
-                to={to}
-                title={collapsed ? label : undefined}
-                className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors duration-150 ${
-                  isActive(to)
-                    ? "bg-sidebar-active text-white"
-                    : "text-white/70 hover:bg-sidebar-hover hover:text-white"
-                }`}
-              >
-                <Icon className="h-5 w-5 shrink-0" />
-                {!collapsed && <span>{label}</span>}
-              </NavLink>
-            </li>
-          ))}
-        </ul>
+      <nav className="flex-1 space-y-6 overflow-y-auto px-3 py-4">
+        {groups.map((g) => (
+          <div key={g}>
+            {!collapsed && <p className="mb-1.5 px-3 text-[10.5px] font-semibold uppercase tracking-[0.08em] text-gray-400">{g}</p>}
+            <ul className="space-y-0.5">
+              {items
+                .filter((i) => i.group === g)
+                .map(({ to, label, icon: Icon }) => (
+                  <li key={to}>
+                    <NavLink
+                      to={to}
+                      title={collapsed ? label : undefined}
+                      className={`group flex items-center gap-3 rounded-[10px] px-3 py-2 text-sm font-medium transition-colors duration-150 ${collapsed ? "justify-center" : ""} ${
+                        isActive(to) ? "bg-nav-active text-primary shadow-[inset_3px_0_0_var(--color-primary)]" : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
+                      }`}
+                    >
+                      <Icon className={`h-[18px] w-[18px] shrink-0 ${isActive(to) ? "text-primary" : "text-gray-400 group-hover:text-gray-600"}`} />
+                      {!collapsed && <span>{label}</span>}
+                    </NavLink>
+                  </li>
+                ))}
+            </ul>
+          </div>
+        ))}
       </nav>
       <SidebarUser collapsed={collapsed} />
       <button
         onClick={onToggle}
         aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-        className="flex h-12 items-center justify-center border-t border-white/10 text-white/50 transition-colors hover:bg-sidebar-hover hover:text-white"
+        className="absolute -right-3 top-5 z-10 flex h-6 w-6 cursor-pointer items-center justify-center rounded-full border border-gray-200 bg-white text-gray-400 shadow-sm transition-colors hover:text-gray-700"
       >
-        {collapsed ? <ChevronRight className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}
+        {collapsed ? <ChevronRight className="h-3.5 w-3.5" /> : <ChevronLeft className="h-3.5 w-3.5" />}
       </button>
     </aside>
   );
@@ -247,10 +251,10 @@ export default function AppLayout() {
   return (
     <div className="flex h-screen overflow-hidden">
       <Sidebar collapsed={collapsed} onToggle={() => setCollapsed((c) => !c)} />
-      <div className="flex flex-1 flex-col overflow-hidden">
-        <header className="flex h-16 shrink-0 items-center justify-between border-b border-gray-200 bg-white px-6">
-          <div className="mr-4 hidden shrink-0 items-center gap-2 rounded-lg bg-primary-50 px-3 py-1.5 text-sm font-semibold text-primary-700 lg:flex" title="Organization">
-            <Building2 className="h-4 w-4" />
+      <div className="relative flex flex-1 flex-col overflow-hidden">
+        <header className="relative z-40 flex h-16 shrink-0 items-center justify-between gap-4 border-b border-gray-200 bg-white px-6">
+          <div className="mr-2 hidden shrink-0 items-center gap-2 rounded-full border border-primary-100 bg-primary-50 px-3 py-1.5 text-sm font-medium text-primary lg:flex" title="Organization">
+            <Building2 className="h-4 w-4 text-primary" />
             <span className="max-w-[200px] truncate">{org.name}</span>
           </div>
           <div className="hidden max-w-md flex-1 md:flex">
@@ -259,28 +263,23 @@ export default function AppLayout() {
           <div className="flex items-center gap-3">
             <button
               onClick={() => navigate("/notifications")}
-              className="relative rounded-lg p-2 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700"
+              className="relative rounded-[10px] border border-gray-200 bg-white p-2 text-gray-500 transition-colors hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700"
               aria-label="Notifications"
             >
               <Bell className="h-5 w-5" />
               {!!unread?.unread && (
-                <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">
+                <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-danger px-1 text-[10px] font-bold text-white">
                   {unread.unread}
                 </span>
               )}
             </button>
-            <button
-              onClick={() => navigate("/compose")}
-              className="hidden items-center gap-1.5 rounded-lg bg-primary-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary-700 sm:inline-flex"
-            >
-              <Plus className="h-4 w-4" />
-              New Post
-            </button>
             <UserMenu />
           </div>
         </header>
-        <main className="flex-1 overflow-y-auto bg-background p-6 pb-24 md:pb-6">
-          <Outlet />
+        <main className="relative flex-1 overflow-y-auto bg-background px-6 py-8 pb-24 md:pb-8">
+          <div className="mx-auto w-full max-w-[1320px]">
+            <Outlet />
+          </div>
         </main>
       </div>
       <MobileNav />

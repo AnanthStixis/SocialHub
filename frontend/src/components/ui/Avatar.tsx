@@ -1,7 +1,7 @@
 import clsx from "clsx";
 
 const sizes = { sm: "h-8 w-8 text-xs", md: "h-10 w-10 text-sm", lg: "h-12 w-12 text-base", xl: "h-16 w-16 text-lg" };
-const colors = ["bg-primary-500", "bg-blue-500", "bg-green-500", "bg-yellow-500", "bg-red-500", "bg-pink-500", "bg-purple-500", "bg-teal-500"];
+const colors = ["bg-primary-600", "bg-zinc-800", "bg-zinc-600", "bg-primary-700", "bg-zinc-700", "bg-primary-500"];
 
 function initials(name?: string) {
   if (!name) return "?";

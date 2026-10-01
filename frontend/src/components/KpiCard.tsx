@@ -6,10 +6,10 @@ import type { Platform } from "@/lib/types";
 export type KpiTone = "blue" | "emerald" | "red" | "slate";
 
 const TONES: Record<KpiTone, { tile: string; stroke: string; glow: string; ring: string }> = {
-  blue: { tile: "bg-blue-50 text-blue-600", stroke: "#2563eb", glow: "hover:shadow-blue-200/70", ring: "hover:border-blue-300" },
-  emerald: { tile: "bg-emerald-50 text-emerald-600", stroke: "#059669", glow: "hover:shadow-emerald-200/70", ring: "hover:border-emerald-300" },
-  red: { tile: "bg-red-50 text-red-600", stroke: "#dc2626", glow: "hover:shadow-red-200/70", ring: "hover:border-red-300" },
-  slate: { tile: "bg-slate-100 text-slate-600", stroke: "#475569", glow: "hover:shadow-slate-300/70", ring: "hover:border-slate-300" },
+  blue: { tile: "bg-blue-light text-blue", stroke: "#2563eb", glow: "hover:shadow-blue-100", ring: "hover:border-blue-200" },
+  emerald: { tile: "bg-success-light text-success", stroke: "#059669", glow: "hover:shadow-emerald-100", ring: "hover:border-emerald-200" },
+  red: { tile: "bg-danger-light text-danger", stroke: "#dc2626", glow: "hover:shadow-red-100", ring: "hover:border-red-200" },
+  slate: { tile: "bg-warning-light text-warning", stroke: "#d97706", glow: "hover:shadow-amber-100", ring: "hover:border-amber-200" },
 };
 
 /** Counts up from 0 whenever the target changes. */
@@ -30,25 +30,35 @@ function useCountUp(target: number, ms = 700) {
   return n;
 }
 
-function Sparkline({ series, color, compact }: { series: number[]; color: string; compact?: boolean }) {
+function Sparkline({ series, color }: { series: number[]; color: string }) {
   const id = useId();
-  const W = 120;
-  const H = 44;
-  const max = Math.max(1, ...series);
-  const pts = series.map((v, i) => [(i / Math.max(1, series.length - 1)) * W, H - 4 - (v / max) * (H - 10)] as const);
-  const line = pts.map(([x, y], i) => `${i ? "L" : "M"}${x.toFixed(1)},${y.toFixed(1)}`).join(" ");
+  const W = 96;
+  const H = 32;
+  const pad = 3;
+  const data = series.length > 1 ? series : [0, 0];
+  const max = Math.max(1, ...data);
+  const pts = data.map((v, i) => [(i / (data.length - 1)) * W, H - pad - (v / max) * (H - pad * 2)] as const);
+  // Smooth line through the points (mid-point quadratic curves).
+  let line = `M${pts[0][0].toFixed(1)},${pts[0][1].toFixed(1)}`;
+  for (let i = 1; i < pts.length; i++) {
+    const [px, py] = pts[i - 1];
+    const [x, y] = pts[i];
+    const mx = (px + x) / 2;
+    line += ` Q${px.toFixed(1)},${py.toFixed(1)} ${mx.toFixed(1)},${((py + y) / 2).toFixed(1)}`;
+  }
+  const [lx, ly] = pts[pts.length - 1];
+  line += ` T${lx.toFixed(1)},${ly.toFixed(1)}`;
   const area = `${line} L${W},${H} L0,${H} Z`;
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className={compact ? "h-8 w-20 overflow-visible" : "h-11 w-28 overflow-visible"} preserveAspectRatio="none" aria-hidden>
+    <svg viewBox={`0 0 ${W} ${H}`} width={W} height={H} preserveAspectRatio="none" className="shrink-0 overflow-visible" aria-hidden>
       <defs>
         <linearGradient id={id} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor={color} stopOpacity="0.3" />
+          <stop offset="0%" stopColor={color} stopOpacity="0.18" />
           <stop offset="100%" stopColor={color} stopOpacity="0" />
         </linearGradient>
       </defs>
       <path d={area} fill={`url(#${id})`} className="kpi-area" />
-      <path d={line} fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" pathLength={1} className="kpi-line" />
-      {pts.length > 0 && <circle cx={pts[pts.length - 1][0]} cy={pts[pts.length - 1][1]} r="3" fill={color} />}
+      <path d={line} fill="none" stroke={color} strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" pathLength={1} className="kpi-line" />
     </svg>
   );
 }
@@ -63,7 +73,6 @@ export default function KpiCard({
   breakdown,
   badWhenUp = false,
   suffix = "",
-  compact = false,
 }: {
   label: string;
   hint: string;
@@ -87,7 +96,7 @@ export default function KpiCard({
   const dir = diff === 0 ? "flat" : diff > 0 ? "up" : "down";
   const good = dir === "flat" ? null : (dir === "up") !== badWhenUp;
   const pct = prev > 0 ? Math.round((Math.abs(diff) / prev) * 100) : null;
-  const badge = good === null ? "bg-gray-100 text-gray-500" : good ? "bg-emerald-50 text-emerald-700" : "bg-red-50 text-red-700";
+  const badge = good === null ? "bg-gray-50 text-gray-500 ring-1 ring-inset ring-gray-200" : good ? "bg-success-light text-success" : "bg-danger-light text-danger";
   const Arrow = dir === "up" ? ArrowUpRight : dir === "down" ? ArrowDownRight : ArrowRight;
   const rows = Object.entries(breakdown).filter(([, v]) => v > 0);
 
@@ -99,30 +108,33 @@ export default function KpiCard({
       onFocus={() => setHover(true)}
       onBlur={() => setHover(false)}
       tabIndex={0}
-      className={`group relative cursor-default rounded-xl border border-gray-100 bg-white ${compact ? "p-3.5" : "p-5"} shadow-sm outline-none transition-all duration-300 hover:-translate-y-1 hover:shadow-xl focus-visible:-translate-y-1 focus-visible:shadow-xl ${t.glow} ${t.ring}`}
+      className={`group relative cursor-default rounded-2xl border border-gray-200 bg-surface p-5 shadow-[var(--shadow-card)] outline-none transition-all duration-200 hover:-translate-y-px hover:shadow-md focus-visible:-translate-y-px focus-visible:shadow-md ${t.glow} ${t.ring}`}
     >
-      <div className="flex items-start justify-between">
-        <div className={`flex ${compact ? "h-8 w-8" : "h-10 w-10"} items-center justify-center rounded-lg transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6 ${t.tile}`}>
-          <Icon size={compact ? 16 : 20} />
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex min-w-0 items-center gap-2.5">
+          <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${t.tile}`}>
+            <Icon size={16} />
+          </div>
+          <span className="truncate text-sm font-medium text-gray-600">{label}</span>
         </div>
-        <span className={`inline-flex items-center gap-0.5 rounded-full px-2 py-0.5 text-xs font-semibold ${badge}`} title="Change since yesterday">
-          <Arrow size={13} />
+        <span className={`inline-flex shrink-0 items-center gap-0.5 rounded-full px-2 py-0.5 text-xs font-semibold ${badge}`} title="Change since yesterday">
+          <Arrow size={12} />
           {pct !== null ? `${pct}%` : diff === 0 ? "0" : Math.abs(diff)}
         </span>
       </div>
 
-      <div className={`${compact ? "mt-2" : "mt-3"} flex items-end justify-between gap-2`}>
-        <div>
-          <div className={`${compact ? "text-2xl" : "text-3xl"} font-semibold tabular-nums`}>{shown}{suffix}</div>
-          <div className="mt-1 text-sm font-medium text-gray-700">{label}</div>
-          <div className="text-xs text-gray-400">{hint}</div>
-        </div>
-        <Sparkline series={series} color={t.stroke} compact={compact} />
+      <div className="mt-3 flex items-end justify-between gap-3">
+        <span className="text-[30px] font-bold leading-none tabular-nums tracking-tight text-gray-900">
+          {shown}
+          {suffix}
+        </span>
+        <Sparkline series={series} color={t.stroke} />
       </div>
+      <div className="mt-2 truncate text-xs text-gray-400">{hint}</div>
 
       <div
         role="tooltip"
-        className={`pointer-events-none absolute left-1/2 top-full z-30 mt-2 w-52 -translate-x-1/2 rounded-xl border border-gray-200 bg-white p-3 shadow-2xl transition-all duration-200 ${
+        className={`pointer-events-none absolute left-1/2 top-full z-30 mt-2 w-52 -translate-x-1/2 rounded-xl border border-gray-200 bg-white p-3 shadow-xl transition-all duration-200 ${
           hover ? "translate-y-0 opacity-100" : "translate-y-1 opacity-0"
         }`}
       >
@@ -137,7 +149,10 @@ export default function KpiCard({
                   <PlatformIcon platform={platform as Platform} size={14} />
                   {platform.charAt(0) + platform.slice(1).toLowerCase()}
                 </span>
-                <span className="font-semibold tabular-nums text-gray-900">{count}{suffix}</span>
+                <span className="font-semibold tabular-nums text-gray-900">
+                  {count}
+                  {suffix}
+                </span>
               </li>
             ))}
           </ul>
